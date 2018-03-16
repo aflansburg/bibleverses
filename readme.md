@@ -3,7 +3,9 @@
 #### Simple wrapper for bible.org's API (json response)
 
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://nodejs.org/en/)
+
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 Written using ES6 syntax and available features. Uses `request-promise-native`.
 
 Usage is very simple.
