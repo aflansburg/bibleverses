@@ -27,14 +27,20 @@ async function retrievePassage(passage){
             .then(res => {
                 const verseDigitRegex = /(\d+)[a-z]/gi;
                 const verseDigitAlphaSplit = /(\d+)([a-z])/i;
-                let passageText = striptags(JSON.parse(res).passages[0].text);
-                let matches = passageText.match(verseDigitRegex);
-                matches.forEach(m => {
-                    let vAlphaSplits = m.match(verseDigitAlphaSplit);
-                    passageText = passageText
-                        .replace(vAlphaSplits[1], vAlphaSplits[1] + ': ');
-                });
-                return passageText;
+                try {
+                    let passageText = striptags(JSON.parse(res).passages[0].text);
+                    let matches = passageText.match(verseDigitRegex);
+                    matches.forEach(m => {
+                        let vAlphaSplits = m.match(verseDigitAlphaSplit);
+                        passageText = passageText
+                            .replace(vAlphaSplits[1], vAlphaSplits[1] + ': ');
+                    });
+                    return passageText;
+                }
+                catch (e){
+                    return 'Requested passage not found in the King James Bible. Try again!'
+                }
+
             })
             .catch(err =>{
                 console.log(err);
