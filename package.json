@@ -1,0 +1,30 @@
+{
+  "name": "bibleverses",
+  "version": "1.0.0",
+  "description": "retrieve bible verses from bibles.org API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aflansburg/bibleverses.git"
+  },
+  "keywords": [
+    "bible",
+    "verses",
+    "bible",
+    "API"
+  ],
+  "author": "aflansburg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aflansburg/bibleverses/issues"
+  },
+  "homepage": "https://github.com/aflansburg/bibleverses#readme",
+  "dependencies": {
+    "request": "^2.85.0",
+    "request-promise-native": "^1.0.5",
+    "striptags": "^3.1.1"
+  }
+}
