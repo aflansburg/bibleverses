@@ -1,4 +1,4 @@
-const testPassage = 'John 1:1-10';
+// const testPassage = 'John 1:1-3';
 const request = require('request-promise-native');
 const api_key = 'KvreiLEYou3I0gBDWrCDMIk3nnmXy899AZAiBR2g';
 const striptags = require('striptags');
@@ -15,7 +15,7 @@ function matchVerseString(passage){
     }
 }
 
-function retrievePassage(passage){
+async function retrievePassage(passage){
 
     try {
         let searchPassage = matchVerseString(passage);
@@ -23,9 +23,8 @@ function retrievePassage(passage){
             uri: `https://${api_key}@bibles.org/v2/passages.json?q[]=${searchPassage[0]}+${searchPassage[1]}&version=eng-KJV`
         };
 
-        request(options)
+        return await request(options)
             .then(res => {
-                console.log(res);
                 const verseDigitRegex = /(\d+)[a-z]/gi;
                 const verseDigitAlphaSplit = /(\d+)([a-z])/i;
                 let passageText = striptags(JSON.parse(res).passages[0].text);
@@ -35,7 +34,7 @@ function retrievePassage(passage){
                     passageText = passageText
                         .replace(vAlphaSplits[1], vAlphaSplits[1] + ': ');
                 });
-                console.log(passageText);
+                return passageText;
             })
             .catch(err =>{
                 console.log(err);
