@@ -1,4 +1,3 @@
-// const testPassage = 'John 1:1-3';
 const request = require('request-promise-native');
 const api_key = 'KvreiLEYou3I0gBDWrCDMIk3nnmXy899AZAiBR2g';
 const striptags = require('striptags');
@@ -15,12 +14,21 @@ function matchVerseString(passage){
     }
 }
 
-async function retrievePassage(passage){
-
+async function retrievePassage(passage, version, timeout){
+    let ver = 'eng-KJV';
+    let tOut = 7500;
+    if (version){
+        ver = version;
+    }
+    if (timeout){
+        tOut = timeout;
+    }
     try {
         let searchPassage = matchVerseString(passage);
+
         let options = {
-            uri: `https://${api_key}@bibles.org/v2/passages.json?q[]=${searchPassage[0]}+${searchPassage[1]}&version=eng-KJV`
+            uri: `https://${api_key}@bibles.org/v2/passages.json?q[]=${searchPassage[0]}+${searchPassage[1]}&version=${ver}`,
+            timeout: tOut
         };
 
         return await request(options)
@@ -38,12 +46,19 @@ async function retrievePassage(passage){
                     return passageText;
                 }
                 catch (e){
-                    return 'Requested passage not found in the King James Bible. Try again!'
+                    return `Requested passage not found in the ${version}. Check your passage and version!`
                 }
 
             })
             .catch(err =>{
-                console.log(err);
+                if (err.message === 'Error: ESOCKETTIMEDOUT'){
+                    return 'Request timed out. Check your passage and version or try again!';
+                }
+                else {
+                    // name,message,cause,error,options,response
+                    return 'An error occured. Full error details: \n\t\t' + err.message;
+
+                }
             })
     }
     catch (e){
@@ -51,6 +66,58 @@ async function retrievePassage(passage){
     }
 }
 
+async function listVersions(language){
+    try {
+        let options = {
+            uri: `https://${api_key}@bibles.org/v2/versions.js`
+        };
+        return await request(options)
+            .then(res => {
+                try {
+                    let versionData = JSON.parse(res).response.versions;
+                    if (language){
+                        let matched_lang_versions = [];
+                        versionData.forEach(version => {
+                            if (language.toLowerCase() === version.lang_name.toLowerCase() || language.toLowerCase() === version.lang_name_eng.toLowerCase()) {
+                                matched_lang_versions.push({
+                                    id: version.id,
+                                    name: version.name,
+                                    lang_name: version.lang_name,
+                                    lang_name_eng: version.lang_name_eng
+                                });
+                            }
+                        });
+                        if (matched_lang_versions.length > 0){
+                            return matched_lang_versions;
+                        }
+                        else {
+                            return 'No matches found for supplied language.'
+                        }
+                    }
+                    else {
+                        let all_versions = [];
+                        versionData.forEach(version => {
+                            all_versions.push({
+                                id: version.id,
+                                name: version.name,
+                                lang_name: version.lang_name,
+                                lang_name_eng: version.lang_name_eng
+                            });
+                        });
+                        return all_versions;
+                    }
+                }
+                catch (e) {
+                    return 'Error retrieving version list from bibles.org API.\n' + e;
+                }
+            })
+    }
+    catch (e){
+        console.log(e);
+        return "Error retrieving verion list from bibles.org API.";
+    }
+}
+
 module.exports = {
-    retrievePassage
+    retrievePassage, listVersions
 };
