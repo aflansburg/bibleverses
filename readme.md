@@ -1,4 +1,5 @@
 # bibleverses - Simple wrapper for bible.org
+[![Build Status](https://travis-ci.org/aflansburg/bibleverses.svg?branch=master)](https://travis-ci.org/aflansburg/bibleverses)
 
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://nodejs.org/en/)
 
